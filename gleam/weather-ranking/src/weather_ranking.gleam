@@ -15,17 +15,15 @@ pub fn fahrenheit_to_celsius(f: Float) -> Float {
   { f -. 32.0 } /. 1.8
 }
 
+fn temperature_to_celsius(temp: Temperature) -> Float {
+  case temp {
+    Celsius(t) -> t
+    Fahrenheit(t) -> fahrenheit_to_celsius(t)
+  }
+}
+
 pub fn compare_temperature(left: Temperature, right: Temperature) -> Order {
-  float.compare(
-    case left {
-      Celsius(v) -> v
-      Fahrenheit(v) -> fahrenheit_to_celsius(v)
-    },
-    case right {
-      Celsius(v) -> v
-      Fahrenheit(v) -> fahrenheit_to_celsius(v)
-    },
-  )
+  float.compare(temperature_to_celsius(left), temperature_to_celsius(right))
 }
 
 pub fn sort_cities_by_temperature(cities: List(City)) -> List(City) {
