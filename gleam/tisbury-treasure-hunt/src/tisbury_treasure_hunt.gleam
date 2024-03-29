@@ -8,8 +8,7 @@ pub fn treasure_location_matches_place_location(
   place_location: #(String, Int),
   treasure_location: #(Int, String),
 ) -> Bool {
-  place_location.0 == treasure_location.1
-  && place_location.1 == treasure_location.0
+  place_location_to_treasure_location(place_location) == treasure_location
 }
 
 pub fn count_place_treasures(
@@ -32,22 +31,13 @@ pub fn special_case_swap_possible(
   place: #(String, #(String, Int)),
   desired_treasure: #(String, #(Int, String)),
 ) -> Bool {
-  case found_treasure.0 {
-    "Brass Spyglass" -> True
-    "Amethyst Octopus" ->
-      case desired_treasure.0 {
-        "Crystal Crab" | "Glass Starfish" -> True
-        _ -> False
-      }
-    "Vintage Pirate Hat" ->
-      case place.0 {
-        "Old Schooner" -> False
-        _ ->
-          case desired_treasure.0 {
-            "Model Ship in Large Bottle" | "Antique Glass Fishnet Float" -> True
-            _ -> False
-          }
-      }
-    _ -> False
+  case found_treasure.0, place.0, desired_treasure.0 {
+    "Brass Spyglass", "Abandoned Lighthouse", _
+    | "Amethyst Octopus", "Stormy Breakwater", "Crystal Crab"
+    | "Amethyst Octopus", "Stormy Breakwater", "Glass Starfish"
+    | "Vintage Pirate Hat", "Harbor Managers Office", "Model Ship in Large Bottle"
+    | "Vintage Pirate Hat", "Harbor Managers Office", "Antique Glass Fishnet Float" ->
+      True
+    _, _, _ -> False
   }
 }
