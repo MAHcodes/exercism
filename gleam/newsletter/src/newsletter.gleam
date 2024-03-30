@@ -1,7 +1,7 @@
-import gleam/result
-import simplifile
-import gleam/string
 import gleam/list
+import gleam/result
+import gleam/string
+import simplifile
 
 fn parse_emails(emails: String) -> List(String) {
   emails
