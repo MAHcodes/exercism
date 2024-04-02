@@ -1,26 +1,34 @@
 pub fn append(first first: List(a), second second: List(a)) -> List(a) {
-  case second {
-    [item, ..rest] -> [item, ..append(first, rest)]
-    [] -> []
+  case first {
+    [item, ..rest] -> [item, ..append(rest, second)]
+    [] -> second
+  }
+}
+
+fn do_concat(lists: List(List(a)), acc: List(a)) -> List(a) {
+  case lists {
+    [list, ..rest] -> do_concat(rest, append(acc, list))
+    [] -> acc
   }
 }
 
 pub fn concat(lists: List(List(a))) -> List(a) {
-  case lists {
-    [list, ..rest] -> append(list, concat(rest))
-    [] -> []
+  do_concat(lists, [])
+}
+
+fn do_filter(list: List(a), function: fn(a) -> Bool, acc: List(a)) -> List(a) {
+  case list {
+    [item, ..rest] ->
+      case function(item) {
+        True -> do_filter(rest, function, [item, ..acc])
+        False -> do_filter(rest, function, acc)
+      }
+    [] -> reverse(acc)
   }
 }
 
 pub fn filter(list: List(a), function: fn(a) -> Bool) -> List(a) {
-  case list {
-    [item, ..rest] ->
-      case function(item) {
-        True -> filter(append([item], rest), function)
-        False -> filter(rest, function)
-      }
-    [] -> []
-  }
+  do_filter(list, function, [])
 }
 
 pub fn length(list: List(a)) -> Int {
@@ -43,8 +51,8 @@ pub fn foldl(
   with function: fn(b, a) -> b,
 ) -> b {
   case list {
-    [item, ..rest] -> foldl(rest, function(initial, item), function)
     [] -> initial
+    [first, ..rest] -> foldl(rest, function(initial, first), function)
   }
 }
 
@@ -53,9 +61,9 @@ pub fn foldr(
   from initial: b,
   with function: fn(b, a) -> b,
 ) -> b {
-  case reverse(list) {
-    [item, ..rest] -> function(foldr(rest, initial, function), item)
+  case list {
     [] -> initial
+    [first, ..rest] -> function(foldr(rest, initial, function), first)
   }
 }
 
