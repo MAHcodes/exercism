@@ -44,14 +44,8 @@ fn do_decode(
 ) -> Result(List(Nucleotide), Nil) {
   case dna {
     <<first:2, rest:bits>> -> {
-      let nucleotide = decode_nucleotide(first)
-      case result.is_ok(nucleotide) {
-        True -> {
-          let assert Ok(nuc) = nucleotide
-          do_decode(rest, [nuc, ..acc])
-        }
-        False -> Error(Nil)
-      }
+      use nucleotide <- result.try(decode_nucleotide(first))
+      do_decode(rest, [nucleotide, ..acc])
     }
     <<>> -> Ok(list.reverse(acc))
     _ -> Error(Nil)
