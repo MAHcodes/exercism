@@ -1,8 +1,3 @@
-import gleam/int
-import gleam/list
-import gleam/result
-import gleam/string
-
 pub type Color {
   Black
   Brown
@@ -32,17 +27,8 @@ pub fn code(color: Color) -> Int {
 }
 
 pub fn value(colors: List(Color)) -> Result(Int, Nil) {
-  case list.length(colors) > 1 {
-    True ->
-      Ok(
-        colors
-        |> list.take(2)
-        |> list.map(code)
-        |> list.map(int.to_string)
-        |> string.join("")
-        |> int.parse
-        |> result.unwrap(0),
-      )
-    False -> Error(Nil)
+  case colors {
+    [a, b, ..] -> Ok(code(a) * 10 + code(b))
+    _ -> Error(Nil)
   }
 }
